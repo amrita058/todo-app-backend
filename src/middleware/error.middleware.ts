@@ -12,12 +12,9 @@ export const errorMiddleware = (
       .status(err.statusCode ? err.statusCode : 500)
       .json({ status: false, message: err.msg || err.message });
   } else {
-    console.log("error here", err);
-    res
-      .status(500)
-      .json({
-        status: false,
-        message: "Something went wrong. Internal server error.",
-      });
+    res.status(500).json({
+      status: false,
+      message: "Something went wrong. Internal server error.",
+    });
   }
 };

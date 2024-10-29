@@ -7,7 +7,7 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   try {
-    // console.log("at login user", req.body);
+    console.log("at login user", req.body);
     // const { userName, password } = req.body;
     // console.log("username and password", userName, password);
     res.status(201).json(await UserService.loginUser(req.body));

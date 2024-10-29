@@ -11,4 +11,10 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+userSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    delete returnedObject.password;
+  },
+});
+
 export default mongoose.model("User", userSchema);

@@ -15,7 +15,12 @@ export const loginUser = async (user: IUserLoginParams) => {
     const validateData = UserLoginSchema.safeParse(user);
     // console.log("validate data", user, validateData.error?.format());
     if (!validateData.success) {
-      const error = new ErrorHandler("Invalid data", 401);
+      const error = new ErrorHandler(
+        validateData.error?.format()?.userName?._errors[0] ||
+          validateData.error?.format()?.password?._errors[0] ||
+          "Invalid data",
+        400
+      );
       throw error;
     }
     const data = await User.findOne({ userName: user.userName });
@@ -25,10 +30,7 @@ export const loginUser = async (user: IUserLoginParams) => {
         data.password as string
       );
       if (isMatch) {
-        const token = jwt.sign(
-          data.userName as string,
-          env.SECRET_KEY as Secret
-        );
+        const token = jwt.sign(data._id.toString(), env.SECRET_KEY as Secret);
         console.log("token:", token);
         return { token };
       } else {
@@ -48,7 +50,7 @@ export const loginUser = async (user: IUserLoginParams) => {
 export const registerUser = async (user: IUserRegisterParams) => {
   try {
     const validateData = UserRegisterSchema.safeParse(user);
-    // console.log("validate data", user, validateData.error?.format());
+    console.log("validate data", user, validateData.error?.format());
     if (!validateData.success) {
       const error = new ErrorHandler(
         validateData.error?.format()?.userName?._errors[0] ||
@@ -67,16 +69,12 @@ export const registerUser = async (user: IUserRegisterParams) => {
       }
       user.password = await bcrypt.hash(user.password, 10);
       const newUser = new User(user);
-      const insertedUser = await newUser
-        .save()
-        .then((savedUser) => {
-          console.log("New user saved:", savedUser);
-        })
-        .catch((error: Error) => {
-          error.message = "Server error";
-          throw error;
-        });
-      return { success: true, message: "User registered successfully" };
+      const insertedUser = await newUser.save();
+      return {
+        success: true,
+        message: "User registered successfully",
+        data: insertedUser,
+      };
     }
   } catch (e) {
     throw e;
