@@ -1,32 +1,23 @@
 // src/index.ts
-import express, { Express, NextFunction, Request, Response } from "express";
-import { connectDB } from "./database/database";
+import express, { Express } from "express";
+import {
+  initialiseMiddleware,
+  initializeErrorHandler,
+  initializeRoutes,
+} from "./app";
 import { env } from "./config/env.config";
-import routes from "./routes/index.routes";
-import { ErrorHandler } from "./utils/error";
-import { errorMiddleware } from "./middleware/error.middleware";
+import { connectDB } from "./database/database";
 
 const app: Express = express();
 const port = env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+initialiseMiddleware(app);
 
 connectDB();
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Api is running");
-});
+initializeRoutes(app);
 
-app.use("/api/v1", routes);
-
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  const error = new ErrorHandler("Path not found", 404);
-  error.name = "Not found";
-  throw error;
-});
-
-app.use(errorMiddleware);
+initializeErrorHandler(app);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
