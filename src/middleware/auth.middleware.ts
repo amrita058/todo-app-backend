@@ -1,5 +1,5 @@
 import { env } from "..//config/env.config";
-import { ErrorHandler } from "..//utils/error";
+import { ErrorHandler } from "../error/error";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 

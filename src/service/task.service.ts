@@ -1,9 +1,9 @@
-import { ErrorHandler } from "../utils/error";
+import { ErrorHandler } from "../error/error";
 import {
   createTaskValidation,
   ICreateTaskParams,
 } from "../validations/task.validations";
-import Task from "../model/task.model";
+import Task from "../entities/task.entity";
 import mongoose from "mongoose";
 
 export const createTask = async (task: ICreateTaskParams, userId: string) => {

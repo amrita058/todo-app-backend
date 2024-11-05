@@ -1,6 +1,6 @@
-import { ErrorHandler } from "../utils/error";
+import { ErrorHandler } from "../error/error";
 import { env } from "../config/env.config";
-import User from "../model/user.model";
+import User from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import {
