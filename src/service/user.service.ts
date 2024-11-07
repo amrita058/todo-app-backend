@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../error/error";
+import { ErrorHandler } from "../config/error.config";
 import { env } from "../config/env.config";
 import User from "../entities/user.entity";
 import bcrypt from "bcrypt";

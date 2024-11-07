@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../error/error";
+import { ErrorHandler } from "../config/error.config";
 import {
   createTaskValidation,
   ICreateTaskParams,

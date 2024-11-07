@@ -1,15 +1,13 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import routes from "./routes/index.routes";
-import { ErrorHandler } from "./error/error";
-import { errorMiddleware } from "./middleware/error.middleware";
+import routes from "../routes/index.routes";
+import { ErrorHandler } from "./error.config";
+import { errorMiddleware } from "../middleware/error.middleware";
 import cors from "cors";
 import morgan from "morgan";
 
-//use in config express
 //url encoded or json which one to use
 //middleware for data validation do not allow to come to controller as well
 //es lint for this project
-//make model as entites
 
 export const initialiseMiddleware = (app: Express) => {
   app.use(cors({ origin: "*" }));

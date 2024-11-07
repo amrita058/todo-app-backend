@@ -4,7 +4,7 @@ import {
   initialiseMiddleware,
   initializeErrorHandler,
   initializeRoutes,
-} from "./app";
+} from "./config/express.config";
 import { env } from "./config/env.config";
 import { connectDB } from "./config/database.config";
 
