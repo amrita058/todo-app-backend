@@ -1,28 +1,15 @@
-import { ErrorHandler } from "../config/error.config";
-import { env } from "../config/env.config";
-import User from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
+import { env } from "../config/env.config";
+import { ErrorHandler } from "../config/error.config";
+import User from "../entities/user.entity";
 import {
   IUserLoginParams,
   IUserRegisterParams,
-  UserLoginSchema,
-  UserRegisterSchema,
 } from "../validations/user.validations";
 
 export const loginUser = async (user: IUserLoginParams) => {
   try {
-    const validateData = UserLoginSchema.safeParse(user);
-    // console.log("validate data", user, validateData.error?.format());
-    if (!validateData.success) {
-      const error = new ErrorHandler(
-        validateData.error?.format()?.userName?._errors[0] ||
-          validateData.error?.format()?.password?._errors[0] ||
-          "Invalid data",
-        400
-      );
-      throw error;
-    }
     const data = await User.findOne({ userName: user.userName });
     if (data) {
       const isMatch = await bcrypt.compare(
@@ -49,33 +36,21 @@ export const loginUser = async (user: IUserLoginParams) => {
 
 export const registerUser = async (user: IUserRegisterParams) => {
   try {
-    const validateData = UserRegisterSchema.safeParse(user);
-    console.log("validate data", user, validateData.error?.format());
-    if (!validateData.success) {
-      const error = new ErrorHandler(
-        validateData.error?.format()?.userName?._errors[0] ||
-          validateData.error?.format()?.password?._errors[0] ||
-          "Invalid data",
-        400
-      );
+    console.log("success validation");
+    const checkUserName = await User.findOne({ userName: user.userName });
+    if (checkUserName) {
+      const error = new ErrorHandler("Username taken", 409);
+      error.name = "userName";
       throw error;
-    } else {
-      console.log("success validation");
-      const checkUserName = await User.findOne({ userName: user.userName });
-      if (checkUserName) {
-        const error = new ErrorHandler("Username taken", 409);
-        error.name = "userName";
-        throw error;
-      }
-      user.password = await bcrypt.hash(user.password, 10);
-      const newUser = new User(user);
-      const insertedUser = await newUser.save();
-      return {
-        success: true,
-        message: "User registered successfully",
-        data: insertedUser,
-      };
     }
+    user.password = await bcrypt.hash(user.password, 10);
+    const newUser = new User(user);
+    const insertedUser = await newUser.save();
+    return {
+      success: true,
+      message: "User registered successfully",
+      data: insertedUser,
+    };
   } catch (e) {
     throw e;
   }

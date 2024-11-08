@@ -7,6 +7,7 @@ import {
 } from "./config/express.config";
 import { env } from "./config/env.config";
 import { connectDB } from "./config/database.config";
+import { scheduleTaskReminder } from "./config/jobSchedule.config";
 
 //version as 0.0.1
 
@@ -20,6 +21,8 @@ connectDB();
 initializeRoutes(app);
 
 initializeErrorHandler(app);
+
+scheduleTaskReminder();
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

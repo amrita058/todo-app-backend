@@ -6,6 +6,7 @@ const taskSchema = new mongoose.Schema(
     taskDescription: { type: String },
     taskStatus: { type: String, enum: ["pending", "in_progress", "completed"] },
     userId: { type: Schema.Types.ObjectId, ref: "User" },
+    expiresAt: { type: Date },
   },
   {
     timestamps: true,

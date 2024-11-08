@@ -1,35 +1,19 @@
-import { ErrorHandler } from "../config/error.config";
-import {
-  createTaskValidation,
-  ICreateTaskParams,
-} from "../validations/task.validations";
-import Task from "../entities/task.entity";
 import mongoose from "mongoose";
+import Task from "../entities/task.entity";
+import { ICreateTaskParams } from "../validations/task.validations";
 
 export const createTask = async (task: ICreateTaskParams, userId: string) => {
   try {
-    const validateData = createTaskValidation.safeParse(task);
-    if (!validateData.success) {
-      const error = new ErrorHandler(
-        validateData.error?.format()?.taskName?._errors[0] ||
-          validateData.error?.format()?.taskDescription?._errors[0] ||
-          validateData.error?.format()?.taskStatus?._errors[0] ||
-          "Invalid data",
-        400
-      );
-      throw error;
-    } else {
-      const newTask = new Task({
-        ...task,
-        userId: new mongoose.Types.ObjectId(userId),
-      });
-      const insertedTask = await newTask.save();
-      return {
-        success: true,
-        message: "Task created successfully",
-        data: insertedTask,
-      };
-    }
+    const newTask = new Task({
+      ...task,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
+    const insertedTask = await newTask.save();
+    return {
+      success: true,
+      message: "Task created successfully",
+      data: insertedTask,
+    };
   } catch (e) {
     console.log("service", e);
     throw e;
@@ -47,18 +31,25 @@ export const getAllTasks = async (userId: string) => {
   }
 };
 
-export const getTaskById = async (taskId: string) => {
+export const getTaskById = async (taskId: string, userId: string) => {
   try {
-    const task = await Task.findById(taskId);
+    const task = await Task.findOne({
+      _id: taskId,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
     return { sucess: true, data: task };
   } catch (e) {
+    console.log("service", e);
     throw e;
   }
 };
 
-export const deleteTaskById = async (taskId: string) => {
+export const deleteTaskById = async (taskId: string, userId: string) => {
   try {
-    const task = await Task.findByIdAndDelete(taskId);
+    const task = await Task.findOneAndDelete({
+      _id: taskId,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
     return { sucess: true, data: task };
   } catch (e) {
     throw e;
@@ -67,10 +58,14 @@ export const deleteTaskById = async (taskId: string) => {
 
 export const updateTaskById = async (
   taskId: string,
-  task: Partial<ICreateTaskParams>
+  task: Partial<ICreateTaskParams>,
+  userId: string
 ) => {
   try {
-    const updatedTask = await Task.findByIdAndUpdate(taskId, task);
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: taskId, ...task, userId: new mongoose.Types.ObjectId(userId) },
+      task
+    );
     return { sucess: true, data: updatedTask };
   } catch (e) {
     throw e;

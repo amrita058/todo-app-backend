@@ -34,7 +34,9 @@ export const getTaskById = async (
   next: NextFunction
 ) => {
   try {
-    res.status(201).json(await TaskService.getTaskById(req.params.id));
+    res
+      .status(201)
+      .json(await TaskService.getTaskById(req.params.id, res.locals.userId));
   } catch (e: any) {
     next(e);
   }
@@ -46,7 +48,9 @@ export const deleteTaskById = async (
   next: NextFunction
 ) => {
   try {
-    res.status(201).json(await TaskService.deleteTaskById(req.params.id));
+    res
+      .status(201)
+      .json(await TaskService.deleteTaskById(req.params.id, res.locals.userId));
   } catch (e: any) {
     next(e);
   }
@@ -60,7 +64,13 @@ export const updataTaskById = async (
   try {
     res
       .status(201)
-      .json(await TaskService.updateTaskById(req.params.id, req.body));
+      .json(
+        await TaskService.updateTaskById(
+          req.params.id,
+          req.body,
+          res.locals.userId
+        )
+      );
   } catch (e: any) {
     next(e);
   }
