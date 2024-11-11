@@ -1,29 +1,30 @@
 // src/index.ts
-import express, { Express } from "express";
+import express, { Express, Request, Response } from 'express'
 import {
   initialiseMiddleware,
   initializeErrorHandler,
-  initializeRoutes,
-} from "./config/express.config";
-import { env } from "./config/env.config";
-import { connectDB } from "./config/database.config";
-import { scheduleTaskReminder } from "./config/jobSchedule.config";
+  initializeRoutes
+} from './config/express.config'
+import { env } from './config/env.config'
+import { connectDB } from './config/database.config'
+import { scheduleTaskReminder } from './config/jobSchedule.config'
+import { app } from './config/express.config'
 
 //version as 0.0.1
 
-const app: Express = express();
-const port = env.PORT || 3000;
+// const app: Express = express();
+const port = env.PORT || 3000
 
-initialiseMiddleware(app);
+// initialiseMiddleware()
 
-connectDB();
+connectDB()
 
-initializeRoutes(app);
+// initializeRoutes()
 
-initializeErrorHandler(app);
+// initializeErrorHandler()
 
-scheduleTaskReminder();
+scheduleTaskReminder()
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+  console.log(`[server]: Server is running at http://localhost:${port}`)
+})

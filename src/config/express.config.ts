@@ -5,14 +5,16 @@ import { errorMiddleware } from '../middleware/error.middleware'
 import cors from 'cors'
 import morgan from 'morgan'
 
-export const initialiseMiddleware = (app: Express) => {
+const app: Express = express()
+
+export const initialiseMiddleware = (app: any) => {
   app.use(cors({ origin: '*' }))
   app.use(morgan('dev'))
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
 }
 
-export const initializeRoutes = (app: Express) => {
+export const initializeRoutes = (app: any) => {
   //health check api use
   app.get('/', (req: Request, res: Response) => {
     res.send('Api is running')
@@ -27,6 +29,12 @@ export const initializeRoutes = (app: Express) => {
   })
 }
 
-export const initializeErrorHandler = (app: Express) => {
+export const initializeErrorHandler = (app: any) => {
   app.use(errorMiddleware)
 }
+
+initialiseMiddleware(app)
+initializeRoutes(app)
+initializeErrorHandler(app)
+
+export { app }
