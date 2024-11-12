@@ -11,7 +11,7 @@ export const loginUser = async (
     // const { userName, password } = req.body;
     // console.log("username and password", userName, password);
     res.status(201).json(await UserService.loginUser(req.body))
-  } catch (e: any) {
+  } catch (e) {
     next(e)
   }
 }
@@ -22,8 +22,7 @@ export const registerUser = async (
   next: NextFunction
 ) => {
   try {
-    res.status(201).json({ success: true })
-    // res.status(201).json(await UserService.registerUser(req.body))
+    res.status(201).json(await UserService.registerUser(req.body))
   } catch (e) {
     next(e)
   }

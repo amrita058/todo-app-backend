@@ -1,27 +1,14 @@
 // src/index.ts
-import express, { Express, Request, Response } from 'express'
-import {
-  initialiseMiddleware,
-  initializeErrorHandler,
-  initializeRoutes
-} from './config/express.config'
-import { env } from './config/env.config'
+import { Express } from 'express'
 import { connectDB } from './config/database.config'
+import { env } from './config/env.config'
+import makeApp from './config/express.config'
 import { scheduleTaskReminder } from './config/jobSchedule.config'
-import { app } from './config/express.config'
 
-//version as 0.0.1
-
-// const app: Express = express();
+const app: Express = makeApp()
 const port = env.PORT || 3000
 
-// initialiseMiddleware()
-
 connectDB()
-
-// initializeRoutes()
-
-// initializeErrorHandler()
 
 scheduleTaskReminder()
 
